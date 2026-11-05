@@ -3,12 +3,14 @@ from __future__ import annotations
 from typing import Any
 
 from PySide6.QtCore import QObject, Qt, Signal
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QPushButton,
     QVBoxLayout,
     QWidget,
 )
@@ -16,12 +18,14 @@ from PySide6.QtWidgets import (
 from ventude.core.async_worker import AsyncWorker
 from ventude.services.weather import Place, WeatherNow, WeatherService
 from ventude.ui import themes
+from ventude.ui.fonts import display_font
 from ventude.ui.icons import icon, icon_button, weather_icon
 
 
 class _Bridge(QObject):
     places = Signal(list)
     weather = Signal(object)
+    located = Signal(object)
     error = Signal(str)
 
 
@@ -39,19 +43,26 @@ class WeatherPage(QWidget):
         self.bridge = _Bridge()
         self.bridge.places.connect(self._show_places)
         self.bridge.weather.connect(self._show_weather)
+        self.bridge.located.connect(self._on_located)
         self.bridge.error.connect(lambda m: self.status.setText(m))
 
         lay = QVBoxLayout(self)
+        lay.setSpacing(8)
         row = QHBoxLayout()
         self.query = QLineEdit()
-        self.query.setPlaceholderText("Cidade (ex.: Cachoeirinha)")
+        self.query.setPlaceholderText("Buscar outra cidade (opcional)")
         self.query.returnPressed.connect(self._search)
         search = icon_button("search", "Buscar cidade")
         search.clicked.connect(self._search)
+        locate = QPushButton("Usar minha localização")
+        locate.setObjectName("Primary")
+        locate.setToolTip("Detectar via GPS do sistema ou IP")
+        locate.clicked.connect(self._locate)
         refresh = icon_button("refresh", "Atualizar previsão")
         refresh.clicked.connect(self._refresh_saved)
         row.addWidget(self.query, 1)
         row.addWidget(search)
+        row.addWidget(locate)
         row.addWidget(refresh)
         lay.addLayout(row)
         self.places = QListWidget()
@@ -63,16 +74,17 @@ class WeatherPage(QWidget):
         self.title.setObjectName("Title")
         self.temp = QLabel("—")
         self.temp.setObjectName("Big")
+        self.temp.setFont(display_font(44, QFont.Weight.DemiBold))
         self.symbol = QLabel()
-        self.symbol.setFixedSize(48, 48)
-        self.symbol.setPixmap(icon("cloud-sun", "#E9C987", 44).pixmap(44, 44))
+        self.symbol.setFixedSize(44, 44)
+        self.symbol.setPixmap(icon("cloud-sun", themes.SIGNAL_WARM, 40).pixmap(40, 40))
         self.detail = QLabel()
         self.detail.setObjectName("Muted")
         self.detail.setWordWrap(True)
         self.forecast = QLabel()
         self.forecast.setObjectName("Muted")
         self.forecast.setWordWrap(True)
-        self.status = QLabel("Dados: Open-Meteo (sem chave).")
+        self.status = QLabel("Detectando localização automaticamente…")
         self.status.setObjectName("Muted")
         lay.addWidget(self.title, 0, Qt.AlignmentFlag.AlignHCenter)
         current = QHBoxLayout()
@@ -85,7 +97,10 @@ class WeatherPage(QWidget):
             w.setAlignment(Qt.AlignmentFlag.AlignCenter)
             lay.addWidget(w)
         lay.addStretch()
-        self._refresh_saved()
+        if self.get_city():
+            self._refresh_saved()
+        else:
+            self._locate()
 
     def _search(self) -> None:
         q = self.query.text().strip()
@@ -102,6 +117,26 @@ class WeatherPage(QWidget):
 
         self.worker.submit(run())
 
+    def _locate(self) -> None:
+        self.status.setText("Detectando localização…")
+
+        async def run() -> None:
+            try:
+                place = await self.service.detect_place()
+                self.bridge.located.emit(place)
+            except Exception as exc:  # noqa: BLE001
+                self.bridge.error.emit(f"Localização falhou: {exc.__class__.__name__}")
+
+        self.worker.submit(run())
+
+    def _on_located(self, place: Place | None) -> None:
+        if place is None:
+            self.status.setText(
+                "Não foi possível detectar a localização. Busque uma cidade acima."
+            )
+            return
+        self._save_and_load(place)
+
     def _show_places(self, places: list) -> None:
         self.places.clear()
         if not places:
@@ -117,6 +152,10 @@ class WeatherPage(QWidget):
 
     def _pick(self, item: QListWidgetItem) -> None:
         place: Place = item.data(256)
+        self.places.hide()
+        self._save_and_load(place)
+
+    def _save_and_load(self, place: Place) -> None:
         self.set_city(
             {
                 "name": place.name,
@@ -126,13 +165,12 @@ class WeatherPage(QWidget):
                 "admin1": place.admin1,
             }
         )
-        self.places.hide()
         self._load(place)
 
     def _refresh_saved(self) -> None:
         data = self.get_city()
         if not data:
-            self.status.setText("Busque uma cidade para começar. Fonte: Open-Meteo.")
+            self._locate()
             return
         self._load(Place(**data))
 
@@ -153,8 +191,8 @@ class WeatherPage(QWidget):
         self.title.setText(wx.place)
         self.temp.setText(f"{wx.temp_c:.0f}°")
         symbol = weather_icon(wx.code)
-        color = "#E9C987" if symbol in ("sun", "cloud-sun") else "#AFCBE9"
-        self.symbol.setPixmap(icon(symbol, color, 44).pixmap(44, 44))
+        color = themes.SIGNAL_WARM if symbol in ("sun", "cloud-sun") else "#9BB7D4"
+        self.symbol.setPixmap(icon(symbol, color, 40).pixmap(40, 40))
         self.symbol.setToolTip(wx.description)
         self.detail.setText(
             f"{wx.description} · sensação {wx.feels_c:.0f}° · "
@@ -166,5 +204,5 @@ class WeatherPage(QWidget):
                 f"{d['date'][5:]}  {d['min_c']:.0f}°/{d['max_c']:.0f}°  {d['description']}"
             )
         self.forecast.setText("\n".join(lines))
-        self.status.setText("Atualizado (cache até 30 min). Open-Meteo.")
+        self.status.setText("Localização automática · Open-Meteo (cache até 30 min).")
         self.temp.setStyleSheet(f"color:{themes.GREEN};")

@@ -18,6 +18,7 @@ from ventude.core.events import EventBus  # noqa: E402
 from ventude.services.media import MediaService  # noqa: E402
 from ventude.storage.database import Database  # noqa: E402
 from ventude.ui import themes  # noqa: E402
+from ventude.ui.fonts import load_fonts  # noqa: E402
 from ventude.ui.notch import IslandWindow  # noqa: E402
 
 
@@ -26,6 +27,7 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("VENTUDE_HOME", str(out / ".demo-home"))
     app = QApplication(sys.argv)
+    load_fonts()
     app.setStyleSheet(themes.STYLESHEET)
     db = Database(Path(os.environ["VENTUDE_HOME"]) / "demo.db")
     island = IslandWindow(Settings(animation_ms=160), db, EventBus(), MediaService())

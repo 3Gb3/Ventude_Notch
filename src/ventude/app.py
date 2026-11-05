@@ -23,6 +23,7 @@ from ventude.services.weather import WeatherService
 from ventude.storage.database import Database
 from ventude.ui import themes
 from ventude.ui.assistant_island import AssistantIsland
+from ventude.ui.fonts import load_fonts
 from ventude.ui.notch import IslandWindow
 from ventude.ui.pages.home import HomePage
 from ventude.ui.tray import Tray
@@ -40,6 +41,7 @@ def run() -> int:
     app.setApplicationName("Ventude")
     app.setOrganizationName("Ventude")
     app.setQuitOnLastWindowClosed(False)
+    load_fonts()
     app.setStyleSheet(themes.STYLESHEET)
 
     data = app_data_dir()
@@ -128,6 +130,7 @@ def run() -> int:
             weather=weather,
             worker=worker,
             city_get=weather_city_get,
+            city_set=weather_city_set,
             calendar_store=calendar_store,
         ),
     )

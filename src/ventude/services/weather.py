@@ -105,6 +105,22 @@ class WeatherService:
         self.cache.set(key, [asdict(p) for p in places], 24 * 3600)
         return places
 
+    async def detect_place(self) -> Place | None:
+        """OS geolocation when possible, otherwise IP-based approximation."""
+        from ventude.services.geo import detect_place
+
+        key = "geo:auto:v1"
+        cached = self.cache.get(key)
+        if cached is not None:
+            try:
+                return Place(**cached)
+            except TypeError:
+                pass
+        place = await detect_place(self.http)
+        if place is not None:
+            self.cache.set(key, asdict(place), 6 * 3600)
+        return place
+
     async def forecast(self, place: Place) -> WeatherNow:
         key = f"wx:{place.lat:.3f},{place.lon:.3f}"
         cached = self.cache.get(key)

@@ -27,7 +27,10 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "ventude"
 module-root = "src"
-source-include = ["src/ventude/ui/assets/**"]
+source-include = [
+    "src/ventude/ui/assets/icons/**",
+    "src/ventude/ui/assets/fonts/**",
+]
 
 [dependency-groups]
 dev = [

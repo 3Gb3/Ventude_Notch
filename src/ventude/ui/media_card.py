@@ -8,7 +8,7 @@ from ventude.services.media import STATUS_LABELS, MediaService, MediaState, form
 from ventude.ui import themes
 from ventude.ui.icons import icon, icon_button
 
-ART = 64
+ART = 56
 
 
 class MediaCard(QWidget):
@@ -21,22 +21,26 @@ class MediaCard(QWidget):
         self._dragging = False
         self.setObjectName("Card")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
-        self.setMinimumHeight(108)
+        self.setMinimumHeight(92)
         row = QHBoxLayout(self)
-        row.setContentsMargins(16, 14, 16, 14)
-        row.setSpacing(14)
+        row.setContentsMargins(12, 10, 12, 10)
+        row.setSpacing(12)
         self.art = QLabel()
         self.art.setFixedSize(ART, ART)
         self.art.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.art.setStyleSheet(f"background:{themes.GRAPHITE_LIGHT}; border-radius:14px;")
+        self.art.setStyleSheet(
+            f"background:{themes.GRAPHITE_LIGHT}; border-radius:{themes.RADIUS_CARD}px;"
+        )
         row.addWidget(self.art)
 
         self.media_box = QWidget()
         col = QVBoxLayout(self.media_box)
         col.setContentsMargins(0, 0, 0, 0)
-        col.setSpacing(3)
+        col.setSpacing(2)
         self.title = QLabel()
-        self.title.setStyleSheet("font-size:14px; font-weight:600;")
+        self.title.setStyleSheet(
+            f"font-family:'{themes.FONT_DISPLAY}'; font-size:13px; font-weight:600;"
+        )
         self.title.setTextFormat(Qt.TextFormat.PlainText)
         self.artist = QLabel()
         self.artist.setObjectName("Muted")

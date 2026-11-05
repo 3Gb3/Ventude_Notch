@@ -42,7 +42,7 @@ class DragHeader(QWidget):
         self.moved = False
         self.setCursor(Qt.CursorShape.OpenHandCursor)
         self.setToolTip("Segure e arraste para mover para qualquer monitor")
-        self.setFixedHeight(28)
+        self.setFixedHeight(26)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() != Qt.MouseButton.LeftButton:
@@ -125,21 +125,23 @@ class FloatingIsland(QWidget):
 
         root = QVBoxLayout(self)
         root.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
-        root.setContentsMargins(14, 7, 14, 12)
-        root.setSpacing(8)
+        root.setContentsMargins(12, 6, 12, 10)
+        root.setSpacing(6)
         self.header = DragHeader(self)
+        self.header.setFixedHeight(26)
         top = QHBoxLayout(self.header)
         top.setContentsMargins(0, 0, 0, 0)
-        top.setSpacing(8)
+        top.setSpacing(7)
         self.mark = QLabel()
-        self.mark.setPixmap(icon(symbol, themes.GREEN, 18).pixmap(18, 18))
+        self.mark.setPixmap(icon(symbol, themes.GREEN, 16).pixmap(16, 16))
         self.mark.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.clock = QLabel(title)
-        self.clock.setObjectName("Clock")
+        self.clock.setObjectName("Brand")
         self.clock.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.clock.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         top.addWidget(self.mark)
-        top.addWidget(self.clock, 1)
+        top.addWidget(self.clock)
+        top.addStretch(1)
         self.tools_host = QWidget()
         self.tools_host.setObjectName("ToolsStrip")
         self.tools_layout = QHBoxLayout(self.tools_host)

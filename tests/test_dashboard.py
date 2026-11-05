@@ -19,6 +19,9 @@ class FakeWeather:
     async def forecast(self, place):
         return WeatherNow(place.name, place.lat, 20, 60, 10, 0, "Céu limpo", [])
 
+    async def detect_place(self):
+        return None
+
 
 def test_dashboard_only_shows_latest_city_response(qapp):
     worker = QueuedWorker()
@@ -35,7 +38,7 @@ def test_dashboard_only_shows_latest_city_response(qapp):
     page.close()
 
 
-def test_dashboard_cleared_city_invalidates_pending_weather(qapp):
+def test_dashboard_cleared_city_triggers_auto_locate(qapp):
     worker = QueuedWorker()
     city = {"name": "Cidade A", "country": "BR", "lat": 20, "lon": 1}
     page = HomePage(
@@ -43,9 +46,11 @@ def test_dashboard_cleared_city_invalidates_pending_weather(qapp):
     )
     city.clear()
     page.refresh_weather()
-    asyncio.run(worker.pending[0])
+    # Pending forecast from first paint may exist; last job is auto-locate.
+    asyncio.run(worker.pending[-1])
     assert page.weather_state is None
     assert page.temperature.text() == "—°"
+    assert "indisponível" in page.weather_detail.toolTip().lower() or page._locating is False
     page.close()
 
 

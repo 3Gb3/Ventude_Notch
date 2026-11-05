@@ -1,80 +1,184 @@
-"""Dense graphite notch palette — cool mint accent, system UI typography."""
+"""Signal Bezel — ink void, phosphor accent, Space Grotesk + IBM Plex."""
 
-BLACK = "#0B0D10"
-GRAPHITE = "#151820"
-GRAPHITE_LIGHT = "#1E222A"
-BORDER = "#2A303A"
-GREEN = "#6EE7B7"
-GREEN_DIM = "#1F3D34"
-TEXT = "#E8EDF4"
-TEXT_MUTED = "#8B93A3"
-DANGER = "#F07178"
-ACCENT_SOFT = "#24352F"
-RADIUS = 22
-# Prefer variable / modern system UI faces; avoid Inter/Roboto/Arial as hero.
-FONT = "Segoe UI Variable Text"
+# Surfaces
+BLACK = "#050607"
+GRAPHITE = "#0E1014"
+GRAPHITE_LIGHT = "#161A21"
+BORDER = "#2C3340"
+BORDER_SOFT = "#1C212B"
+
+# Signal (sparse — never flood)
+GREEN = "#3DFFB0"
+GREEN_DIM = "#0F2E24"
+ACCENT_SOFT = "#10261E"
+SIGNAL_WARM = "#F0C674"  # weather sun only
+
+# Type
+TEXT = "#F4F6F8"
+TEXT_MUTED = "#7A8494"
+TEXT_FAINT = "#4E5666"
+DANGER = "#FF6B7A"
+
+RADIUS = 18
+RADIUS_CARD = 8
+RADIUS_CONTROL = 6
+
+FONT_DISPLAY = "Space Grotesk"
+FONT_UI = "IBM Plex Sans"
+FONT_MONO = "IBM Plex Mono"
 FONT_FALLBACK = "Segoe UI, SF Pro Text, Helvetica Neue, sans-serif"
 
 STYLESHEET = f"""
-* {{ font-family: '{FONT}', {FONT_FALLBACK}; color: {TEXT}; font-size: 12.5px; }}
+* {{
+    font-family: '{FONT_UI}', {FONT_FALLBACK};
+    color: {TEXT};
+    font-size: 12px;
+}}
 QWidget {{ background: transparent; }}
 QDialog {{ background: {BLACK}; }}
 QWidget#Content, QScrollArea, QScrollArea > QWidget > QWidget {{ background: transparent; }}
-QWidget#Card, QFrame#Card {{ background: {GRAPHITE}; border: 1px solid {BORDER};
-    border-radius: 14px; }}
+QWidget#Card, QFrame#Card {{
+    background: {GRAPHITE};
+    border: 1px solid {BORDER_SOFT};
+    border-radius: {RADIUS_CARD}px;
+}}
 QWidget#ToolsStrip {{ background: transparent; }}
 QLabel {{ border: none; background: transparent; }}
-QLabel#Clock {{ font-size: 12.5px; font-weight: 600; letter-spacing: 0.2px; }}
-QLabel#Muted {{ color: {TEXT_MUTED}; font-size: 11.5px; }}
-QLabel#Title {{ font-size: 18px; font-weight: 600; }}
-QLabel#Section {{ color: {TEXT_MUTED}; font-size: 10.5px; font-weight: 600;
-    letter-spacing: 0.6px; text-transform: uppercase; }}
-QLabel#Big {{ font-size: 48px; font-weight: 300; letter-spacing: -1.5px; }}
-QLabel#Toast {{ color: {GREEN}; font-size: 11.5px; font-weight: 600; }}
-QPushButton {{ background: {GRAPHITE}; border: 1px solid {BORDER};
-    border-radius: 9px; padding: 6px 11px; }}
-QPushButton:hover {{ background: {GRAPHITE_LIGHT}; border-color: #3F4A52; }}
+QLabel#Clock {{
+    font-family: '{FONT_MONO}', {FONT_FALLBACK};
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+}}
+QLabel#Brand {{
+    font-family: '{FONT_DISPLAY}', {FONT_FALLBACK};
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}}
+QLabel#Muted {{ color: {TEXT_MUTED}; font-size: 11px; }}
+QLabel#Faint {{ color: {TEXT_FAINT}; font-size: 10px; }}
+QLabel#Title {{
+    font-family: '{FONT_DISPLAY}', {FONT_FALLBACK};
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}}
+QLabel#Section {{
+    font-family: '{FONT_DISPLAY}', {FONT_FALLBACK};
+    color: {TEXT_FAINT};
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+}}
+QLabel#Big {{
+    font-family: '{FONT_DISPLAY}', {FONT_FALLBACK};
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -1.8px;
+}}
+QLabel#HeroTime {{
+    font-family: '{FONT_DISPLAY}', {FONT_FALLBACK};
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -1.6px;
+}}
+QPushButton {{
+    font-family: '{FONT_UI}', {FONT_FALLBACK};
+    background: {GRAPHITE_LIGHT};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CONTROL}px;
+    padding: 6px 10px;
+}}
+QPushButton:hover {{ background: #1C222C; border-color: #3A4454; }}
 QPushButton:pressed {{ background: {GREEN_DIM}; }}
-QPushButton:checked {{ background: {GREEN_DIM}; border-color: {GREEN}; }}
-QPushButton:disabled {{ color: #59616D; border-color: #22262D; }}
+QPushButton:checked {{ background: {GREEN_DIM}; border-color: {GREEN}; color: {GREEN}; }}
+QPushButton:disabled {{ color: {TEXT_FAINT}; border-color: {BORDER_SOFT}; }}
 QPushButton:focus {{ border-color: {GREEN}; }}
-QPushButton#Tab, QPushButton#IconButton {{ background: transparent; border: 1px solid transparent;
-    border-radius: 11px; padding: 0; }}
+QPushButton#Tab, QPushButton#IconButton {{
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0;
+}}
 QPushButton#Tab:hover, QPushButton#IconButton:hover {{ background: {GRAPHITE_LIGHT}; }}
-QPushButton#Tab:checked {{ background: {ACCENT_SOFT}; border-color: #355248; }}
+QPushButton#Tab:checked {{
+    background: {ACCENT_SOFT};
+    border-color: #1A3D30;
+}}
 QPushButton#Tab:focus, QPushButton#IconButton:focus {{ border-color: {GREEN}; }}
-QPushButton#IconButton:checked {{ background: {GREEN_DIM}; border-color: {GREEN}; }}
-QPushButton#Primary {{ background: {GREEN_DIM}; border-color: #3D6B58; color: {GREEN}; }}
-QPushButton#Danger {{ color: {DANGER}; background: #2A181C; border-color: #59353E; }}
+QPushButton#IconButton:checked {{
+    background: {GREEN_DIM};
+    border-color: {GREEN};
+}}
+QPushButton#Primary {{
+    background: {GREEN_DIM};
+    border-color: #1F4A3A;
+    color: {GREEN};
+    font-weight: 600;
+}}
+QPushButton#Danger {{
+    color: {DANGER};
+    background: #1A0E12;
+    border-color: #4A2830;
+}}
 QLineEdit, QTextEdit, QPlainTextEdit, QTextBrowser, QListWidget {{
-    background: {GRAPHITE}; border: 1px solid {BORDER}; border-radius: 10px;
-    padding: 7px; selection-background-color: {GREEN_DIM}; }}
-QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{ border-color: #4F8A72; }}
-QListWidget::item {{ padding: 8px; border-radius: 6px; }}
+    font-family: '{FONT_UI}', {FONT_FALLBACK};
+    background: {GRAPHITE};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CONTROL}px;
+    padding: 7px 8px;
+    selection-background-color: {GREEN_DIM};
+}}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{ border-color: #2A6B52; }}
+QListWidget::item {{ padding: 7px; border-radius: 4px; }}
 QListWidget::item:selected {{ background: {GREEN_DIM}; color: {GREEN}; }}
-QSpinBox, QComboBox, QDateEdit, QTimeEdit {{ background: {GRAPHITE};
-    border: 1px solid {BORDER}; border-radius: 8px; padding: 5px 8px; min-height: 17px; }}
-QComboBox QAbstractItemView {{ background: {GRAPHITE}; border: 1px solid {BORDER};
-    selection-background-color: {GREEN_DIM}; padding: 5px; }}
+QSpinBox, QComboBox, QDateEdit, QTimeEdit {{
+    font-family: '{FONT_UI}', {FONT_FALLBACK};
+    background: {GRAPHITE};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CONTROL}px;
+    padding: 5px 8px;
+    min-height: 16px;
+}}
+QComboBox QAbstractItemView {{
+    background: {GRAPHITE};
+    border: 1px solid {BORDER};
+    selection-background-color: {GREEN_DIM};
+    padding: 4px;
+}}
 QMenu {{ background: {GRAPHITE}; border: 1px solid {BORDER}; padding: 4px; }}
-QMenu::item {{ padding: 7px 18px; border-radius: 5px; }}
+QMenu::item {{ padding: 7px 16px; border-radius: 4px; }}
 QMenu::item:selected {{ background: {GREEN_DIM}; color: {GREEN}; }}
 QCheckBox {{ spacing: 8px; }}
-QCheckBox::indicator {{ width: 15px; height: 15px; border: 1px solid #56616B;
-    border-radius: 4px; background: {GRAPHITE}; }}
+QCheckBox::indicator {{
+    width: 14px; height: 14px;
+    border: 1px solid #56616B;
+    border-radius: 3px;
+    background: {GRAPHITE};
+}}
 QCheckBox::indicator:checked {{ background: {GREEN_DIM}; border: 2px solid {GREEN}; }}
-QToolTip {{ background: #1E222A; color: {TEXT}; border: 1px solid #424B57;
-    padding: 5px 8px; border-radius: 5px; }}
+QToolTip {{
+    font-family: '{FONT_UI}', {FONT_FALLBACK};
+    background: {GRAPHITE_LIGHT};
+    color: {TEXT};
+    border: 1px solid {BORDER};
+    padding: 5px 8px;
+    border-radius: 4px;
+}}
 QScrollArea {{ border: none; }}
-QScrollBar:vertical {{ background: transparent; width: 6px; margin: 2px; }}
-QScrollBar::handle:vertical {{ background: #3C444F; min-height: 22px; border-radius: 3px; }}
+QScrollBar:vertical {{ background: transparent; width: 5px; margin: 2px; }}
+QScrollBar::handle:vertical {{ background: #2E3644; min-height: 20px; border-radius: 2px; }}
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0; }}
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{ background: transparent; }}
-QScrollBar:horizontal {{ height: 6px; background: transparent; }}
-QScrollBar::handle:horizontal {{ background: #3C444F; border-radius: 3px; }}
+QScrollBar:horizontal {{ height: 5px; background: transparent; }}
+QScrollBar::handle:horizontal {{ background: #2E3644; border-radius: 2px; }}
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{ width: 0; }}
-QSlider::groove:horizontal {{ height: 3px; background: {BORDER}; border-radius: 2px; }}
-QSlider::sub-page:horizontal {{ background: {GREEN}; border-radius: 2px; }}
-QSlider::handle:horizontal {{ width: 9px; margin: -3px 0; background: {TEXT};
-    border-radius: 4px; }}
+QSlider::groove:horizontal {{ height: 2px; background: {BORDER}; border-radius: 1px; }}
+QSlider::sub-page:horizontal {{ background: {GREEN}; border-radius: 1px; }}
+QSlider::handle:horizontal {{
+    width: 8px; margin: -3px 0;
+    background: {TEXT};
+    border-radius: 4px;
+}}
 """

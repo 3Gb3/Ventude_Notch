@@ -174,9 +174,16 @@ class IslandWindow(FloatingIsland):
         return time
 
     def _update_clock(self) -> None:
-        self.clock.setText("Ventude" if self.expanded else self.compact_text())
+        if self.expanded:
+            self.clock.setObjectName("Brand")
+            self.clock.setText("VENTUDE")
+        else:
+            self.clock.setObjectName("Clock")
+            self.clock.setText(self.compact_text())
+        self.clock.style().unpolish(self.clock)
+        self.clock.style().polish(self.clock)
         self.mark.setPixmap(
-            icon("music" if self._showing_track() else "apps", themes.GREEN, 18).pixmap(18, 18)
+            icon("music" if self._showing_track() else "apps", themes.GREEN, 16).pixmap(16, 16)
         )
 
     def _on_media(self, state: MediaState | None) -> None:
