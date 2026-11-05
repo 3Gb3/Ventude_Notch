@@ -56,6 +56,7 @@ def run() -> int:
     lists_store = ListsStore(data / "lists.db")
     holder: dict[str, IslandWindow] = {}
     pages: list = []
+    ai_wanted = False
 
     def assistant_page():  # criado dentro da ilha, na thread da UI
         from ventude.assistant.service import AssistantService
@@ -132,9 +133,25 @@ def run() -> int:
     )
     holder["island"] = island
     assistant = AssistantIsland(settings, db, bus, assistant_page)
-    island.assistant_requested.connect(assistant.reveal)
-    island.settings_updated.connect(assistant.sync_settings)
+    # AI panel starts hidden — toggled from the main notch tools strip.
+    assistant.hide()
+    island.set_assistant_visible(False)
     media.start()
+
+    def set_ai_visible(visible: bool) -> None:
+        nonlocal ai_wanted
+        ai_wanted = visible
+        if visible:
+            assistant.reveal()
+        else:
+            assistant.hide()
+        island.set_assistant_visible(visible)
+
+    def toggle_assistant() -> None:
+        set_ai_visible(not assistant.isVisible())
+
+    island.assistant_toggled.connect(toggle_assistant)
+    island.settings_updated.connect(assistant.sync_settings)
 
     def quit_app() -> None:
         db.save_settings(island.settings)
@@ -143,7 +160,10 @@ def run() -> int:
     def toggle_islands() -> None:
         visible = not island.isVisible()
         island.setVisible(visible)
-        assistant.setVisible(visible)
+        if visible and ai_wanted:
+            assistant.show()
+        else:
+            assistant.hide()
 
     def reset_positions() -> None:
         island.settings.island_position_json = ""
@@ -157,7 +177,7 @@ def run() -> int:
     island.quit_requested.connect(quit_app)
     island.reset_positions_requested.connect(reset_positions)
     tray = Tray(
-        settings.monitor_index, island.set_monitor, toggle_islands, quit_app, assistant.reveal
+        settings.monitor_index, island.set_monitor, toggle_islands, quit_app, toggle_assistant
     )
     bus.monitor_changed.connect(tray.rebuild_monitors)
 
@@ -188,7 +208,6 @@ def run() -> int:
         connect_screen(screen)
     tray.show()
     island.show()
-    assistant.show()
     log.info("Ventude iniciado")
     code = app.exec()
     media.stop()

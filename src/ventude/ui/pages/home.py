@@ -69,7 +69,7 @@ class HomePage(QWidget):
         clock_card, clock_layout = self._card()
         clock_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.time = QLabel()
-        self.time.setStyleSheet("font-size:42px; font-weight:300; letter-spacing:-2px;")
+        self.time.setStyleSheet("font-size:40px; font-weight:300; letter-spacing:-1.5px;")
         self.date = QLabel()
         self.date.setObjectName("Muted")
         self.weekday = QLabel()
@@ -166,10 +166,10 @@ class HomePage(QWidget):
         card = QWidget()
         card.setObjectName("Card")
         card.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
-        card.setMinimumHeight(150)
+        card.setMinimumHeight(140)
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(14, 12, 14, 12)
-        layout.setSpacing(6)
+        layout.setContentsMargins(12, 10, 12, 10)
+        layout.setSpacing(5)
         return card, layout
 
     def refresh(self) -> None:

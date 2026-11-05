@@ -37,9 +37,9 @@ class Tray(QSystemTrayIcon):
         self.setToolTip("Ventude")
         self.on_monitor = on_monitor
         menu = QMenu()
-        menu.addAction("Mostrar/ocultar ilhas", on_toggle)
+        menu.addAction("Mostrar/ocultar notch", on_toggle)
         if on_assistant:
-            menu.addAction("Abrir IA", on_assistant)
+            menu.addAction("Mostrar/ocultar IA", on_assistant)
         self.monitor_menu = menu.addMenu("Monitor")
         self.group = QActionGroup(self.monitor_menu)
         self.group.setExclusive(True)

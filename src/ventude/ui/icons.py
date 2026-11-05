@@ -1,8 +1,10 @@
-"""Small, consistent vector icons. No font glyphs or downloaded assets are required."""
+"""Vector icons: Streamline Sharp Line Free assets + compact path fallbacks."""
 
 from __future__ import annotations
 
+import re
 from functools import lru_cache
+from pathlib import Path
 
 from PySide6.QtCore import QByteArray, QSize, Qt
 from PySide6.QtGui import QIcon, QPainter, QPixmap
@@ -11,6 +13,9 @@ from PySide6.QtWidgets import QPushButton
 
 from ventude.ui import themes
 
+_ASSETS = Path(__file__).resolve().parent / "assets" / "icons"
+
+# Compact path fragments used when no Streamline SVG is present for a name.
 _PATHS = {
     "home": '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/>',
     "apps": '<rect x="3" y="3" width="7" height="7" rx="2"/>'
@@ -68,19 +73,41 @@ _PATHS = {
     "stop": '<rect x="5" y="5" width="14" height="14" rx="3"/>',
     "key": '<circle cx="8" cy="8" r="5"/><path d="m12 12 9 9m-5-5 3-3m-6 0 3-3"/>',
     "history": '<path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v6l4 2"/>',
+    "eyedropper": '<path d="m2 22 1-1 4-1 9-9 2 2-9 9-1 4Zm13-13 4-4a2.5 2.5 0 0 0-3.5-3.5l-4 4"/>',
+    "capture": '<rect x="3" y="5" width="18" height="14" rx="2"/>'
+    '<path d="M8 5l1.5-2h5L16 5M12 10a3 3 0 1 0 0.01 0Z"/>',
+    "scan-text": '<path d="M4 7V5a1 1 0 0 1 1-1h2M4 17v2a1 1 0 0 0 1 1h2'
+    'M20 7V5a1 1 0 0 0-1-1h-2m3 13v2a1 1 0 0 1-1 1h-2M8 9h8M8 13h6M8 17h4"/>',
+    "copy": '<rect x="8" y="8" width="12" height="12" rx="2"/>'
+    '<path d="M4 16V6a2 2 0 0 1 2-2h10"/>',
+    "clipboard": '<rect x="6" y="5" width="12" height="16" rx="2"/>'
+    '<path d="M9 5V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1M9 11h6M9 15h4"/>',
 }
+
+_STROKE_RE = re.compile(r'stroke="[^"]*"')
+
+
+def _recolor_svg(svg: str, color: str) -> str:
+    return _STROKE_RE.sub(f'stroke="{color}"', svg)
+
+
+def _svg_for(name: str, color: str) -> str:
+    asset = _ASSETS / f"{name}.svg"
+    if asset.is_file():
+        return _recolor_svg(asset.read_text(encoding="utf-8"), color)
+    path = _PATHS.get(name, _PATHS["sparkles"])
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
+        f'fill="none" stroke="{color}" stroke-width="1.7" '
+        f'stroke-linecap="round" stroke-linejoin="round">{path}</svg>'
+    )
 
 
 @lru_cache(maxsize=256)
 def icon(name: str, color: str | None = None, size: int = 20) -> QIcon:
     """Render at double resolution so icons stay crisp on Windows display scaling."""
     color = color or themes.TEXT_MUTED
-    path = _PATHS.get(name, _PATHS["sparkles"])
-    svg = (
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
-        f'fill="none" stroke="{color}" stroke-width="1.7" '
-        f'stroke-linecap="round" stroke-linejoin="round">{path}</svg>'
-    )
+    svg = _svg_for(name, color)
     pixmap = QPixmap(size * 2, size * 2)
     pixmap.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pixmap)

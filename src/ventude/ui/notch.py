@@ -24,6 +24,7 @@ from ventude.ui.pages.home import HomePage
 from ventude.ui.pages.pinned import PinnedPage
 from ventude.ui.pages.placeholder import PlaceholderPage
 from ventude.ui.pages.settings_page import SettingsPage
+from ventude.ui.tools_bar import ToolsBar, ToolsController
 
 TABS = [
     ("Início", "home"),
@@ -39,7 +40,7 @@ TABS = [
 
 
 class IslandWindow(FloatingIsland):
-    assistant_requested = Signal()
+    assistant_toggled = Signal()
     settings_updated = Signal(object)
     quit_requested = Signal()
     reset_positions_requested = Signal()
@@ -60,6 +61,10 @@ class IslandWindow(FloatingIsland):
         self.media, self.media_state = media, None
         self._widgets = widgets or {}
         self.pinned_pages: list[PinnedPage] = []
+        self.tools = ToolsController(self)
+        self.tools.assistant_toggle.connect(self.assistant_toggled)
+        self.tools_bar = ToolsBar(self.tools, self)
+        self.tools_layout.addWidget(self.tools_bar)
         self._build(home_factory)
         media.state_changed.connect(self._on_media)
         bus.pinned_changed.connect(lambda: [p.reload() for p in self.pinned_pages])
@@ -73,9 +78,9 @@ class IslandWindow(FloatingIsland):
     def _build(self, home_factory: Callable[[], HomePage] | None) -> None:
         layout = QVBoxLayout(self.content)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(12)
+        layout.setSpacing(10)
         tabs = QHBoxLayout()
-        tabs.setSpacing(6)
+        tabs.setSpacing(4)
         tabs.addStretch()
         self.stack = QStackedWidget()
         self.group = QButtonGroup(self)
@@ -83,7 +88,7 @@ class IslandWindow(FloatingIsland):
         self.settings_page.quit_requested.connect(self.quit_requested)
         self.settings_page.reset_positions_requested.connect(self.reset_positions_requested)
         for index, (name, symbol) in enumerate(TABS):
-            button = icon_button(symbol, name, 42)
+            button = icon_button(symbol, name, 36)
             button.setObjectName("Tab")
             button.setCheckable(True)
             self.group.addButton(button, index)
@@ -114,15 +119,14 @@ class IslandWindow(FloatingIsland):
             scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
             scroll.setWidget(page)
             self.stack.addWidget(scroll)
-        self.ai_button = icon_button("sparkles", "Abrir ilha da IA", 42)
-        tabs.addSpacing(8)
-        tabs.addWidget(self.ai_button)
-        self.ai_button.clicked.connect(self.assistant_requested)
         tabs.addStretch()
         self.group.idClicked.connect(self._select_page)
         self._select_page(0)
         layout.addLayout(tabs)
         layout.addWidget(self.stack, 1)
+
+    def set_assistant_visible(self, visible: bool) -> None:
+        self.tools_bar.set_ai_checked(visible)
 
     def _select_page(self, index: int) -> None:
         self.stack.setCurrentIndex(index)
@@ -149,11 +153,10 @@ class IslandWindow(FloatingIsland):
     def _sizes(self, expanded: bool) -> tuple[int, int]:
         s = self.settings
         if expanded:
-            return max(680, s.expanded_width), max(440, s.expanded_height)
-        return (
-            s.compact_media_width if self._showing_track() else s.compact_width,
-            max(46, s.compact_height),
-        )
+            return max(700, s.expanded_width), max(440, s.expanded_height)
+        # Compact bar needs room for utility icons + clock/media.
+        base = s.compact_media_width if self._showing_track() else max(280, s.compact_width)
+        return base, max(44, s.compact_height)
 
     def _showing_track(self) -> bool:
         return self.media_state is not None and self.media_state.is_playing
@@ -165,7 +168,7 @@ class IslandWindow(FloatingIsland):
             title = self.clock.fontMetrics().elidedText(
                 self.media_state.title,
                 Qt.TextElideMode.ElideRight,
-                max(80, self.settings.compact_media_width - 130),
+                max(72, self.settings.compact_media_width - 200),
             )
             return f"{title}   ·   {time}"
         return time
@@ -203,6 +206,9 @@ class IslandWindow(FloatingIsland):
         settings.monitor_index = index
         settings.island_position_json = ""
         self._settings_changed(settings)
+
+    def _keep_open(self) -> bool:
+        return self.tools._overlay is not None
 
     def toggle_visible(self) -> None:
         self.setVisible(not self.isVisible())

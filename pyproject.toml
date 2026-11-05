@@ -1,6 +1,6 @@
 [project]
 name = "ventude"
-version = "0.3.0"
+version = "0.4.0"
 description = "Dynamic Island e launcher para Windows"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -9,12 +9,12 @@ dependencies = [
     "jsonschema>=4.26.0",
     "pyjwt[crypto]>=2.15.1",
     "pyside6>=6.12.0",
-    "winrt-runtime>=4.1.0",
-    "winrt-windows-foundation>=4!10.0.28000.2957",
-    "winrt-windows-foundation-collections>=4!10.0.28000.2957",
-    "winrt-windows-media>=4!10.0.28000.2957",
-    "winrt-windows-media-control>=4!10.0.28000.2957",
-    "winrt-windows-storage-streams>=4!10.0.28000.2957",
+    "winrt-runtime>=4.1.0; sys_platform == 'win32'",
+    "winrt-windows-foundation>=4!10.0.28000.2957; sys_platform == 'win32'",
+    "winrt-windows-foundation-collections>=4!10.0.28000.2957; sys_platform == 'win32'",
+    "winrt-windows-media>=4!10.0.28000.2957; sys_platform == 'win32'",
+    "winrt-windows-media-control>=4!10.0.28000.2957; sys_platform == 'win32'",
+    "winrt-windows-storage-streams>=4!10.0.28000.2957; sys_platform == 'win32'",
 ]
 
 [project.scripts]
@@ -23,6 +23,11 @@ ventude = "ventude:main"
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ventude"
+module-root = "src"
+source-include = ["src/ventude/ui/assets/**"]
 
 [dependency-groups]
 dev = [

@@ -36,6 +36,8 @@ class AssistantIsland(FloatingIsland):
         self.reposition()
         if not settings.assistant_position_json:
             self.save_position()
+        # Companion island is opt-in; hover expand only applies while visible.
+        self.hover_timer.setInterval(100)
 
     def _default_anchor(self, area: QRect) -> QPoint:
         # The companion sits to the side so the main dashboard can open independently.

@@ -9,11 +9,11 @@ uv sync
 uv run ventude
 ```
 
-A ilha principal mostra a hora e a faixa em reprodução. Passe o mouse para ver o clima, os controles de música e a semana com o próximo compromisso. No primeiro uso, escolha sua cidade no ícone de clima. Os dados musicais vêm do player ativo do Windows.
+A ilha principal (notch) mostra a hora e a faixa em reprodução. Passe o mouse para expandir clima, controles de música e a semana com o próximo compromisso. No primeiro uso, escolha sua cidade no ícone de clima. Os dados musicais vêm do player ativo do Windows.
 
-A ilha **Ventude IA** abre ao passar o mouse ou pelo ícone de brilhos no painel principal. Use **+** para iniciar uma sessão e o seletor para retomar outra. Em **Sobre você**, edite, apague ou desative seu perfil. Quando a memória está ativa, as preferências entram no contexto enviado ao provedor de IA. Salvar uma sugestão de memória durante o chat pede confirmação.
+No cabeçalho compacto há atalhos densos: **conta-gotas** (cor da tela → área de transferência), **OCR** (captura de região → texto) e **IA** (mostra/oculta o painel). A ilha de IA **não** fica sempre visível — só aparece quando você aciona o botão de brilhos (ou o item na bandeja). Use **+** para iniciar uma sessão e o seletor para retomar outra. Em **Sobre você**, edite, apague ou desative seu perfil.
 
-Arraste o cabeçalho de cada ilha para posicioná-la, inclusive em outro monitor. As posições ficam salvas. Na engrenagem, **Restaurar posições** reúne as duas no monitor selecionado e **Sair do Ventude** encerra o aplicativo.
+Arraste o cabeçalho de cada ilha para posicioná-la, inclusive em outro monitor. As posições ficam salvas. Na engrenagem, **Restaurar posições** reúne as ilhas no monitor selecionado e **Sair do Ventude** encerra o aplicativo.
 
 ## Testes e lint
 

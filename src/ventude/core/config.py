@@ -8,12 +8,12 @@ from typing import Any
 class Settings:
     monitor_index: int = 0
     collapse_delay_ms: int = 600
-    animation_ms: int = 220
-    compact_width: int = 216
-    compact_height: int = 46
-    compact_media_width: int = 340
-    expanded_width: int = 740
-    expanded_height: int = 470
+    animation_ms: int = 180
+    compact_width: int = 300
+    compact_height: int = 44
+    compact_media_width: int = 380
+    expanded_width: int = 760
+    expanded_height: int = 480
     top_margin: int = 8
     clock_24h: bool = True
     weather_city_json: str = ""  # JSON Place salvo pelo widget de clima

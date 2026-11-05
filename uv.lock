@@ -674,19 +674,19 @@ wheels = [
 
 [[package]]
 name = "ventude"
-version = "0.3.0"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
     { name = "jsonschema" },
     { name = "pyjwt", extra = ["crypto"] },
     { name = "pyside6" },
-    { name = "winrt-runtime" },
-    { name = "winrt-windows-foundation" },
-    { name = "winrt-windows-foundation-collections" },
-    { name = "winrt-windows-media" },
-    { name = "winrt-windows-media-control" },
-    { name = "winrt-windows-storage-streams" },
+    { name = "winrt-runtime", marker = "sys_platform == 'win32'" },
+    { name = "winrt-windows-foundation", marker = "sys_platform == 'win32'" },
+    { name = "winrt-windows-foundation-collections", marker = "sys_platform == 'win32'" },
+    { name = "winrt-windows-media", marker = "sys_platform == 'win32'" },
+    { name = "winrt-windows-media-control", marker = "sys_platform == 'win32'" },
+    { name = "winrt-windows-storage-streams", marker = "sys_platform == 'win32'" },
 ]
 
 [package.dev-dependencies]
@@ -702,12 +702,12 @@ requires-dist = [
     { name = "jsonschema", specifier = ">=4.26.0" },
     { name = "pyjwt", extras = ["crypto"], specifier = ">=2.15.1" },
     { name = "pyside6", specifier = ">=6.12.0" },
-    { name = "winrt-runtime", specifier = ">=4.1.0" },
-    { name = "winrt-windows-foundation", specifier = ">=4!10.0.28000.2957" },
-    { name = "winrt-windows-foundation-collections", specifier = ">=4!10.0.28000.2957" },
-    { name = "winrt-windows-media", specifier = ">=4!10.0.28000.2957" },
-    { name = "winrt-windows-media-control", specifier = ">=4!10.0.28000.2957" },
-    { name = "winrt-windows-storage-streams", specifier = ">=4!10.0.28000.2957" },
+    { name = "winrt-runtime", marker = "sys_platform == 'win32'", specifier = ">=4.1.0" },
+    { name = "winrt-windows-foundation", marker = "sys_platform == 'win32'", specifier = ">=4!10.0.28000.2957" },
+    { name = "winrt-windows-foundation-collections", marker = "sys_platform == 'win32'", specifier = ">=4!10.0.28000.2957" },
+    { name = "winrt-windows-media", marker = "sys_platform == 'win32'", specifier = ">=4!10.0.28000.2957" },
+    { name = "winrt-windows-media-control", marker = "sys_platform == 'win32'", specifier = ">=4!10.0.28000.2957" },
+    { name = "winrt-windows-storage-streams", marker = "sys_platform == 'win32'", specifier = ">=4!10.0.28000.2957" },
 ]
 
 [package.metadata.requires-dev]
