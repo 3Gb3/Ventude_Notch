@@ -15,7 +15,7 @@ def make_icon() -> QIcon:
     pm.fill(Qt.GlobalColor.transparent)
     p = QPainter(pm)
     p.setRenderHint(QPainter.RenderHint.Antialiasing)
-    p.setBrush(QColor(themes.BLACK))
+    p.setBrush(QColor("#FFFFFF"))
     p.setPen(QColor(themes.GREEN))
     p.drawRoundedRect(4, 18, 56, 28, 14, 14)
     p.setBrush(QColor(themes.GREEN))

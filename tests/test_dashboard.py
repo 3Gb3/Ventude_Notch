@@ -46,11 +46,10 @@ def test_dashboard_cleared_city_triggers_auto_locate(qapp):
     )
     city.clear()
     page.refresh_weather()
-    # Pending forecast from first paint may exist; last job is auto-locate.
     asyncio.run(worker.pending[-1])
     assert page.weather_state is None
     assert page.temperature.text() == "—°"
-    assert "indisponível" in page.weather_detail.toolTip().lower() or page._locating is False
+    assert page._locating is False
     page.close()
 
 
@@ -61,7 +60,7 @@ def test_dashboard_agenda_refresh_and_navigation(qapp, tmp_path):
     assert page.next_event.toolTip() == event.title
     calendar.remove(event.id)
     page.refresh_calendar()
-    assert page.next_event.toolTip() == "Agenda livre"
+    assert page.next_event.toolTip() == "Nenhum evento nos próximos 14 dias"
     destinations = []
     page.navigate_requested.connect(destinations.append)
     page.weather_action.click()

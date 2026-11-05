@@ -82,6 +82,10 @@ _PATHS = {
     '<path d="M4 16V6a2 2 0 0 1 2-2h10"/>',
     "clipboard": '<rect x="6" y="5" width="12" height="16" rx="2"/>'
     '<path d="M9 5V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1M9 11h6M9 15h4"/>',
+    "mic": '<rect x="9" y="2" width="6" height="11" rx="3"/>'
+    '<path d="M5 11a7 7 0 0 0 14 0M12 18v4m-4 0h8"/>',
+    "heart": '<path d="M12 20s-7-4.4-7-9.2A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.8'
+    'C19 15.6 12 20 12 20Z"/>',
 }
 
 _STROKE_RE = re.compile(r'stroke="[^"]*"')

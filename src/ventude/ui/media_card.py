@@ -8,7 +8,7 @@ from ventude.services.media import STATUS_LABELS, MediaService, MediaState, form
 from ventude.ui import themes
 from ventude.ui.icons import icon, icon_button
 
-ART = 56
+ART = 64
 
 
 class MediaCard(QWidget):
@@ -21,15 +21,16 @@ class MediaCard(QWidget):
         self._dragging = False
         self.setObjectName("Card")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
-        self.setMinimumHeight(92)
+        self.setMinimumHeight(120)
         row = QHBoxLayout(self)
-        row.setContentsMargins(12, 10, 12, 10)
+        row.setContentsMargins(14, 12, 14, 12)
         row.setSpacing(12)
         self.art = QLabel()
         self.art.setFixedSize(ART, ART)
         self.art.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.art.setStyleSheet(
-            f"background:{themes.GRAPHITE_LIGHT}; border-radius:{themes.RADIUS_CARD}px;"
+            f"background:rgba(255,255,255,160); border:1px solid {themes.GLASS_EDGE_SOFT};"
+            f" border-radius:16px;"
         )
         row.addWidget(self.art)
 
@@ -113,7 +114,7 @@ class MediaCard(QWidget):
         self._update_labels()
         self.status.setText(STATUS_LABELS.get(state.status, state.status))
         self.setToolTip(self.status.text())
-        self.play_btn.setIcon(icon("pause" if state.is_playing else "play", themes.TEXT))
+        self.play_btn.setIcon(icon("pause" if state.is_playing else "play", "#FFFFFF"))
         self.play_btn.setToolTip("Pausar" if state.is_playing else "Reproduzir")
         self.play_btn.setAccessibleName(self.play_btn.toolTip())
         self.play_btn.setEnabled(state.can_play_pause)

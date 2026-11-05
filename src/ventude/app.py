@@ -132,6 +132,9 @@ def run() -> int:
             city_get=weather_city_get,
             city_set=weather_city_set,
             calendar_store=calendar_store,
+            market=market,
+            news=news,
+            db=db,
         ),
     )
     holder["island"] = island

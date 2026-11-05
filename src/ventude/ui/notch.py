@@ -101,6 +101,8 @@ class IslandWindow(FloatingIsland):
                 )
                 self.home = page
                 page.navigate_requested.connect(self.navigate)
+                if hasattr(page, "assistant_requested"):
+                    page.assistant_requested.connect(self.assistant_toggled)
             elif name in ("Aplicativos", "Pastas"):
                 page = PinnedPage("app" if name == "Aplicativos" else "folder", self.db, self.bus)
                 self.pinned_pages.append(page)
@@ -133,9 +135,12 @@ class IslandWindow(FloatingIsland):
         for i, (_, symbol) in enumerate(TABS):
             btn = self.group.button(i)
             btn.setChecked(i == index)
-            btn.setIcon(icon(symbol, themes.GREEN if i == index else themes.TEXT_MUTED))
+            # Active tab sits on green fill — use white glyph for contrast.
+            btn.setIcon(icon(symbol, "#FFFFFF" if i == index else themes.TEXT_MUTED))
         if index == 0:
             self.home.refresh()
+            if hasattr(self.home, "reload_pins"):
+                self.home.reload_pins()
 
     def navigate(self, name: str) -> None:
         for index, (label, _) in enumerate(TABS):
@@ -153,10 +158,9 @@ class IslandWindow(FloatingIsland):
     def _sizes(self, expanded: bool) -> tuple[int, int]:
         s = self.settings
         if expanded:
-            return max(700, s.expanded_width), max(440, s.expanded_height)
-        # Compact bar needs room for utility icons + clock/media.
-        base = s.compact_media_width if self._showing_track() else max(280, s.compact_width)
-        return base, max(44, s.compact_height)
+            return max(920, s.expanded_width), max(560, s.expanded_height)
+        base = s.compact_media_width if self._showing_track() else max(268, s.compact_width)
+        return base, max(42, s.compact_height)
 
     def _showing_track(self) -> bool:
         return self.media_state is not None and self.media_state.is_playing
@@ -176,14 +180,17 @@ class IslandWindow(FloatingIsland):
     def _update_clock(self) -> None:
         if self.expanded:
             self.clock.setObjectName("Brand")
-            self.clock.setText("VENTUDE")
-        else:
+            self.clock.setText("Ventude Notch")
+        elif self._showing_track():
             self.clock.setObjectName("Clock")
             self.clock.setText(self.compact_text())
+        else:
+            self.clock.setObjectName("Brand")
+            self.clock.setText("Ventude Notch")
         self.clock.style().unpolish(self.clock)
         self.clock.style().polish(self.clock)
         self.mark.setPixmap(
-            icon("music" if self._showing_track() else "apps", themes.GREEN, 16).pixmap(16, 16)
+            icon("music" if self._showing_track() else "sparkles", themes.GREEN, 16).pixmap(16, 16)
         )
 
     def _on_media(self, state: MediaState | None) -> None:

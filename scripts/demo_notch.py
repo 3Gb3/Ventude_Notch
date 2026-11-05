@@ -48,13 +48,12 @@ def main() -> int:
         if n == 0:
             shot("notch-compact.png")
             island.animate_to(True)
-            QTimer.singleShot(280, step)
+            QTimer.singleShot(420, step)
         elif n == 1:
             shot("notch-expanded.png")
             island.set_assistant_visible(True)
-            # Fake AI companion badge for the screenshot of the toggle state.
             shot("notch-ai-toggled.png")
-            QTimer.singleShot(200, step)
+            QTimer.singleShot(250, step)
         elif n == 2:
             # Tiny legend card so reviewers see tool meanings without emoji.
             card = QWidget(None)
@@ -64,7 +63,7 @@ def main() -> int:
             )
             lay = QVBoxLayout(card)
             for line in (
-                "Ferramentas do notch",
+                "Glass Crystal · Ventude Notch",
                 "Conta-gotas — amostrar cor da tela",
                 "OCR — capturar região e extrair texto",
                 "IA — mostrar ou ocultar o painel",

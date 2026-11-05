@@ -255,9 +255,15 @@ class FloatingIsland(QWidget):
         rect = QRectF(0.5, 0.5, w - 1.0, h - 1.0)
         path = QPainterPath()
         path.addRoundedRect(rect, radius, radius)
-        painter.fillPath(path, QColor(themes.BLACK))
-        painter.setPen(QPen(QColor(themes.BORDER), 1))
+        # Frosted glass stack: soft fill + bright rim (Qt cannot do real OS blur here).
+        painter.fillPath(path, QColor(*themes.SHELL_FILL))
+        painter.setPen(QPen(QColor(*themes.SHELL_BORDER), 1.4))
         painter.drawPath(path)
+        inner = rect.adjusted(1.2, 1.2, -1.2, -1.2)
+        inner_path = QPainterPath()
+        inner_path.addRoundedRect(inner, max(4, radius - 2), max(4, radius - 2))
+        painter.setPen(QPen(QColor(*themes.SHELL_INNER), 1.0))
+        painter.drawPath(inner_path)
         painter.end()
         self._bg_cache = pm
         self._bg_cache_key = key

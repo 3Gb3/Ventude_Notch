@@ -9,18 +9,19 @@ class Settings:
     monitor_index: int = 0
     collapse_delay_ms: int = 600
     animation_ms: int = 180
-    compact_width: int = 300
-    compact_height: int = 44
+    compact_width: int = 280
+    compact_height: int = 42
     compact_media_width: int = 380
-    expanded_width: int = 760
-    expanded_height: int = 480
-    top_margin: int = 8
+    expanded_width: int = 980
+    expanded_height: int = 680
+    top_margin: int = 10
     clock_24h: bool = True
     weather_city_json: str = ""  # JSON Place salvo pelo widget de clima
     news_auto_refresh: bool = True
     island_position_json: str = ""
     assistant_position_json: str = ""
-    layout_version: int = 2
+    appearance: str = "glass"
+    layout_version: int = 3
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -49,4 +50,18 @@ class Settings:
                 if getattr(s, name) == previous:
                     setattr(s, name, getattr(cls(), name))
             s.layout_version = 2
+        if s.layout_version < 3:
+            # Glass Crystal dashboard defaults — only bump sizes still on prior presets.
+            glass_defaults = {
+                "compact_width": (216, 300),
+                "compact_height": (44, 46),
+                "compact_media_width": (340, 380),
+                "expanded_width": (740, 760),
+                "expanded_height": (470, 480),
+            }
+            for name, previous_values in glass_defaults.items():
+                if getattr(s, name) in previous_values:
+                    setattr(s, name, getattr(cls(), name))
+            s.appearance = "glass"
+            s.layout_version = 3
         return s
