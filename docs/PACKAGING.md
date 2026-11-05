@@ -18,7 +18,7 @@ uv sync --group dev
 uv run pyinstaller --noconfirm packaging\ventude.spec
 ```
 
-### Resultado (versão 0.3.0)
+### Resultado (versão 0.4.0)
 
 | Item | Valor |
 |------|--------|

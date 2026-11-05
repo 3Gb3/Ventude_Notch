@@ -3,6 +3,9 @@ from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_all, collect_submodules
 
+ROOT = Path(SPECPATH).resolve().parent
+UI_ASSETS = ROOT / "src" / "ventude" / "ui" / "assets"
+
 datas, binaries, hidden = [], [], []
 for pkg in (
     "winrt",
@@ -26,6 +29,10 @@ for pkg in (
         hidden += h
     except Exception:
         pass
+
+# Signal Bezel fonts + Streamline icons (Path(__file__)/assets in frozen app).
+if UI_ASSETS.is_dir():
+    datas.append((str(UI_ASSETS), "ventude/ui/assets"))
 
 hidden += collect_submodules("ventude")
 hidden += [
